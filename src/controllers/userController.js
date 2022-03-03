@@ -1,23 +1,40 @@
 import userService from '../services/userService';
 
-let login = async (req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
-
-    if(!email || !password) {
-        return res.status(500).json({
-            errCode: 1,
-            message: "Missing input parameters"
+let register = async (req, res) => {
+    try {
+        let response = await userService.registerService(req.body);
+        return res.status(200).json(response);
+    } catch(e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
         })
     }
+}
 
-    let userData = await userService.loginService(email, password);
+let changePassword = async (req, res) => {
+    try {
+        let response = await userService.changePasswordService(req.body);
+        
+        return res.status(200).json(response);
+    } catch(e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
+}
 
-    return res.status(200).json({
-        errCode: userData.errCode,
-        message: userData.errMessage,
-        user: userData.userData ? userData.userData : {}
-    })
+let forgotPassword = async (req, res) => {
+    try {
+        let response = await userService.forgotPasswordService(req.body);
+        return res.status(200).json(response);
+    } catch(e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
 }
 
 let createNewUser = async (req, res) => {
@@ -34,8 +51,8 @@ let createNewUser = async (req, res) => {
 
 let getAllUsers = async (req, res) => {
     try {
-        let users = await userService.getAllUsersService();
-        return res.status(200).json(users)
+        let data = await userService.getAllUsersService();
+        return res.status(200).json(data);
     } catch(e) {
         return res.status(200).json({
             errCode: -1,
@@ -71,6 +88,21 @@ let updateUser = async (req, res) => {
     
 }
 
+let getUserByID = async (req, res) => {
+    try {
+        let response = await userService.getUserByIDService(req.query.id);
+        return res.status(200).json(response)
+    } catch(e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
+}
+
 module.exports = {
-    login, createNewUser, getAllUsers, deleteUser, updateUser
+    register, createNewUser, getAllUsers, deleteUser, 
+    updateUser, changePassword, forgotPassword, getUserByID,
+    
+
 }

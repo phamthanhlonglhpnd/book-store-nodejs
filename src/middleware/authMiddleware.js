@@ -12,6 +12,7 @@ let isAuth = async (req, res, next) => {
             next();
         } catch(e) {
             return res.status(401).json({
+                errCode: 1,
                 message: 'Unauthorized.',
             });
         }

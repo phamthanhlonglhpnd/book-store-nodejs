@@ -1,5 +1,6 @@
 import db from '../models/index';
 import bcrypt from 'bcryptjs';
+import emailService from "./emailService";
 const jwtHelper = require("../helpers/jwt.helper");
 
 const salt = bcrypt.genSaltSync(10);
@@ -30,14 +31,9 @@ let loginService = (email, password) => {
                     const { id, name, roleID } = user;
                     const data = { email, id, roleID };
      
-                    const accessToken = await jwtHelper.generateToken(data, accessTokenSecret, accessTokenLife);
+                    const access_token = await jwtHelper.generateToken(data, accessTokenSecret, accessTokenLife);
      
-                    const refreshToken = await jwtHelper.generateToken(data, refreshTokenSecret, refreshTokenLife);
-
-                    user.access_token = accessToken;
-                    user.refresh_token = refreshToken;
-
-                    const { access_token, refresh_token } = user;
+                    const refresh_token = await jwtHelper.generateToken(data, refreshTokenSecret, refreshTokenLife);
 
                     const userData = { id, email, name, roleID, access_token, refresh_token };
 
@@ -72,26 +68,86 @@ let registerService = async (user) => {
         let hassPassWord = await hashUserPassword(user.password);
         if(email) {
             return {
-                errCode: -1,
+                errCode: 1,
                 errMessage: "Your email is exist in system. Plz try another email!"
             }
         };
-        if(!user.email || !user.password || !user.name) {
+        if(!user.email || !user.password) {
             return {
-                errCode: 1,
+                errCode: 2,
                 errMessage: "Missing params!"
             }
         };
-        let userData = await db.User.create({
+        await db.User.create({
             email: user.email,
             password: hassPassWord,
-            name: user.name,
             roleID: 'R3'
         });
         return {
             errCode: 0,
             errMessage: "OK",
-            userData
+        }
+    } catch(e) {
+        return e;
+    }
+}
+
+let changePasswordService = async (userData) => {
+    try {
+        let user = await db.User.findOne({
+            where: { id: userData.id },
+            attributes: ['password', 'id'],
+            raw: false
+        })
+        
+        let check = await bcrypt.compareSync(userData.password, user.password);
+       
+        if(check) {
+            let hassPassWord = await hashUserPassword(userData.newPassword);
+            user.password = hassPassWord;
+            await user.save();
+            return {
+                errCode: 0,
+                errMessage: "Change Password Success!"
+            }
+        } else {
+            return {
+                errCode: 1,
+                errMessage: "Wrong Password!"
+            }
+        }
+    } catch(e) {
+        return e;
+    }
+}
+
+let forgotPasswordService = async (userData) => {
+    try {
+        let user = await db.User.findOne({
+            where: { email: userData.email },
+            attributes: ['password', 'id', 'email', 'name'],
+            raw: false
+        })
+        if(!user) {
+            return {
+                errCode: 1,
+                errMessage: "Your email isn't exist in system!"
+            }
+        } else {
+            let newPassword = Math.floor(Math.random() * (999999 - 100000 + 1) + 100000);
+            let newHassPassword = await hashUserPassword(newPassword.toString());
+            
+            user.password = newHassPassword;
+            await user.save();
+            await emailService.forgotPasswordEmail({
+                receiveEmail: userData.email,
+                newPassword: newPassword,
+                name: user.name
+            })
+            return {
+                errCode: 0,
+                errMessage: "Please check your email to get new password!"
+            }
         }
     } catch(e) {
         return e;
@@ -152,6 +208,8 @@ let createNewUserService = (data) => {
                     password: hashPassword,
                     name: data.name,
                     roleID: data.roleID,
+                    image: data.image ? data.image : "",
+                    phone: data.phone ? data.phone : ""
                 })
 
                 delete user.password;
@@ -171,7 +229,7 @@ let createNewUserService = (data) => {
 let getAllUsersService = async () => {
     
         try {
-            let users = await db.User.findAll({
+            let data = await db.User.findAll({
                 attributes: {
                     exclude: ['password', 'access_token', 'refresh_token']
                 },
@@ -179,7 +237,7 @@ let getAllUsersService = async () => {
             return {
                 errCode: 0,
                 errMessage: "OK",
-                users
+                data
             };
         } catch(e) {
             return e;
@@ -187,10 +245,29 @@ let getAllUsersService = async () => {
     
 }
 
+let getUserByIDService = async (id) => {
+    try {
+        let user = await db.User.findOne({
+            where: { id: id },
+            attributes: {
+                exclude: ['password', 'access_token', 'refresh_token']
+            },
+            raw: false
+        }) 
+        return {
+            errCode: 0,
+            errMessage: "Ok",
+            user
+        }
+    } catch(e) {
+        return e;
+    }
+}
+
 let updateUserService = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if(!data.id || !data.email || !data.name) {
+            if(!data.id) {
                 resolve({
                     errCode: 2,
                     errMessage: "Missing params!"
@@ -207,7 +284,8 @@ let updateUserService = (data) => {
                     })
                 } else {
                     user.name = data.name;
-                    user.roleID = data.roleID;
+                    user.image = data.image;
+                    user.phone = data.phone;
                     await user.save();
                     resolve({
                         errCode: 0,
@@ -248,6 +326,7 @@ let deleteUserService = (id) => {
 }
 
 module.exports = {
-    loginService, registerService, getAllUsersService,
-    createNewUserService, updateUserService, deleteUserService
+    loginService, registerService, forgotPasswordService, changePasswordService,
+    getAllUsersService, createNewUserService, updateUserService, deleteUserService, 
+    getUserByIDService
 }

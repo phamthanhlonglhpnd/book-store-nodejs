@@ -1,9 +1,5 @@
  const jwtHelper = require("../helpers/jwt.helper");
  import userService from '../services/userService';
-
- // Biến cục bộ trên server này sẽ lưu trữ tạm danh sách token
- // Trong dự án thực tế, nên lưu chỗ khác, có thể lưu vào Redis hoặc DB
- let tokenList = {};
  
  // Thời gian sống của token
  const accessTokenLife = process.env.ACCESS_TOKEN_LIFE || "1h";
@@ -64,29 +60,34 @@
  }
  
  let refreshToken = async (req, res) => {
+  // res.cookie('access_token', 'none', {
+  //   expires: new Date(Date.now() + 3 * 1000),
+  //   httpOnly: true,
+  // })
    // User gửi mã refresh token kèm theo trong body
-   const refreshTokenFromClient = req.body.refreshToken;
-   // debug("tokenList: ", tokenList);
+   const refreshTokenFromClient = req.body.refreshToken || req.cookies['refresh_token'] || req.headers['x-access-token'];
    
    // Nếu như tồn tại refreshToken truyền lên và nó cũng nằm trong tokenList của chúng ta
-   if (refreshTokenFromClient && (tokenList[refreshTokenFromClient])) {
+   if (refreshTokenFromClient) {
      try {
        // Verify kiểm tra tính hợp lệ của cái refreshToken và lấy dữ liệu giải mã decoded 
        const decoded = await jwtHelper.verifyToken(refreshTokenFromClient, refreshTokenSecret);
  
        // Thông tin user lúc này các bạn có thể lấy thông qua biến decoded.data
-       // có thể mở comment dòng debug bên dưới để xem là rõ nhé.
-       // debug("decoded: ", decoded);
+  
        const userFakeData = decoded.data;
  
-       debug(`Thực hiện tạo mã Token trong bước gọi refresh Token, [thời gian sống vẫn là 1 giờ.]`);
        const accessToken = await jwtHelper.generateToken(userFakeData, accessTokenSecret, accessTokenLife);
+
+      //  res.cookie('access_token', access_token, {
+      //   httpOnly: true,
+      //   secure: true,
+      //   maxAge: 7*24*60*60*1000
+      // })
  
        // gửi token mới về cho người dùng
        return res.status(200).json({accessToken});
      } catch (error) {
-       // Lưu ý trong dự án thực tế hãy bỏ dòng debug bên dưới, mình để đây để debug lỗi cho các bạn xem thôi
-       debug(error);
  
        res.status(403).json({
          message: 'Invalid refresh token.',
