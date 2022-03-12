@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Publisher.hasOne(models.Book, { foreignKey: 'publisherID', as: 'publisher' })
     }
   };
   Publisher.init({

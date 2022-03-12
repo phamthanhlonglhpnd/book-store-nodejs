@@ -29,7 +29,7 @@ module.exports = {
       dimension: {
         type: Sequelize.STRING
       },
-      active_count: {
+      count: {
         type: Sequelize.INTEGER
       },
       publisherID: {
@@ -50,17 +50,8 @@ module.exports = {
       best_seller: {
         type: Sequelize.INTEGER
       },
-      discountID: {
-        type: Sequelize.INTEGER
-      },
       publish_date: {
-        type: Sequelize.INTEGER
-      },
-      publish_month: {
-        type: Sequelize.INTEGER
-      },
-      publish_year: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

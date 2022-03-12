@@ -294,6 +294,54 @@ let getPublisherByID = async (req, res) => {
     }
 }
 
+// Language
+let createLanguage = async (req, res) => {
+    try {
+        let response = await adminService.createLanguageService(req.body);
+        return res.status(200).json(response);
+    } catch(e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
+}
+
+let getAllLanguages = async (req, res) => {
+    try {
+        let response = await adminService.getAllLanguagesService();
+        return res.status(200).json(response);
+    } catch(e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
+}
+
+let updateLanguage = async (req, res) => {
+    try {
+        let response = await adminService.updateLanguageService(req.body);
+        return res.status(200).json(response);
+    } catch(e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
+}
+
+let deleteLanguage = async (req, res) => {
+    try {
+        let response = await adminService.deleteLanguageService(req.body.id);
+        return res.status(200).json(response);
+    } catch(e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
+}
 
 module.exports = {
     createType, updateType, getAllType, deleteType,
@@ -301,5 +349,7 @@ module.exports = {
     createAuthor, updateAuthor, getAllAuthors, getAuthorByID, deleteAuthor,
     createStore, updateStore, getAllStores, deleteStore, getStoreByID,
     createPublisher, updatePublisher, getAllPublishers, deletePublisher, getPublisherByID,
+    createLanguage, getAllLanguages, updateLanguage, deleteLanguage,
+    
 
 }

@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Book.belongsToMany(models.Type_Of_Handbook, { through: models.Book_Type });
+      Book.hasMany(models.Book_Type, { foreignKey: 'bookID' });
+      Book.belongsToMany(models.Author, { through: models.Book_Author });
+      Book.hasMany(models.Book_Author, { foreignKey: 'bookID' });
+      Book.belongsTo(models.Language, { foreignKey: 'languageID', targetKey: 'id', as: 'language' });
+      Book.belongsTo(models.Publisher, { foreignKey: 'publisherID', targetKey: 'id', as: 'publisher' });
+      Book.belongsTo(models.Store, { foreignKey: 'storeID', targetKey: 'id', as: 'store' });
     }
   };
   Book.init({
@@ -21,17 +28,14 @@ module.exports = (sequelize, DataTypes) => {
     page: DataTypes.INTEGER,
     price: DataTypes.STRING,
     dimension: DataTypes.STRING,
-    active_count: DataTypes.INTEGER,
+    count: DataTypes.INTEGER,
     publisherID: DataTypes.INTEGER,
     storeID: DataTypes.INTEGER,
     languageID: DataTypes.INTEGER,
     view: DataTypes.INTEGER,
     like: DataTypes.INTEGER,
     best_seller: DataTypes.INTEGER,
-    discountID: DataTypes.INTEGER,
-    publish_date: DataTypes.INTEGER,
-    publish_month: DataTypes.INTEGER,
-    publish_year: DataTypes.INTEGER,
+    publish_date: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Book',
