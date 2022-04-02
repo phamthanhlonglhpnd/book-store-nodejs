@@ -11,10 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Book.belongsToMany(models.Type_Of_Handbook, { through: models.Book_Type });
+      // Book.belongsToMany(models.Type_Of_Handbook, { through: models.Book_Type });
       Book.hasMany(models.Book_Type, { foreignKey: 'bookID' });
-      Book.belongsToMany(models.Author, { through: models.Book_Author });
+      // Book.belongsToMany(models.Author, { through: models.Book_Author });
       Book.hasMany(models.Book_Author, { foreignKey: 'bookID' });
+
       Book.belongsTo(models.Language, { foreignKey: 'languageID', targetKey: 'id', as: 'language' });
       Book.belongsTo(models.Publisher, { foreignKey: 'publisherID', targetKey: 'id', as: 'publisher' });
       Book.belongsTo(models.Store, { foreignKey: 'storeID', targetKey: 'id', as: 'store' });

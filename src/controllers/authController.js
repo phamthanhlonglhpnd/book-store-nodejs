@@ -79,11 +79,11 @@
  
        const accessToken = await jwtHelper.generateToken(userFakeData, accessTokenSecret, accessTokenLife);
 
-      //  res.cookie('access_token', access_token, {
-      //   httpOnly: true,
-      //   secure: true,
-      //   maxAge: 7*24*60*60*1000
-      // })
+       res.cookie('access_token', accessToken, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7*24*60*60*1000
+      })
  
        // gửi token mới về cho người dùng
        return res.status(200).json({accessToken});

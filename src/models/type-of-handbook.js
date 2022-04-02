@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Type_Of_Handbook.hasMany(models.Handbook, {  foreignKey: 'typeID', as:'typeOfHandbook' });
-      Type_Of_Handbook.belongsToMany(models.Book, { through: models.Book_Type, });
-      Type_Of_Handbook.hasMany(models.Book_Type, { foreignKey: 'typeID', as: 'typeOfBook' });
+      // Type_Of_Handbook.belongsToMany(models.Book, { through: models.Book_Type });
+      Type_Of_Handbook.hasMany(models.Book_Type, { foreignKey: 'typeID' });
     }
   };
   Type_Of_Handbook.init({

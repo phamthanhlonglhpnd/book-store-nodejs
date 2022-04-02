@@ -36,6 +36,8 @@ let initWebRoutes = (app) => {
     router.get("/api/get-all-languages", adminController.getAllLanguages);
 
     router.get("/api/get-all-books", bookController.getAllBooks);
+    router.get("/api/get-book-by-id", bookController.getBookByID);
+    router.get("/api/get-book-by-filter", bookController.getBookByFilter);
 
     // Need token
     router.use(authMiddleware.isAuth);

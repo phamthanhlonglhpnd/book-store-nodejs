@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Book_Type.belongsTo(models.Book, { foreignKey: 'bookID', targetKey: 'id' });
-      Book_Type.belongsTo(models.Type_Of_Handbook, { foreignKey: 'typeID', targetKey: 'id', as: 'typeOfBook' })
+      Book_Type.belongsTo(models.Type_Of_Handbook, { foreignKey: 'typeID', targetKey: 'id'})
     }
   };
   Book_Type.init({

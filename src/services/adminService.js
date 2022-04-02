@@ -45,20 +45,21 @@ let updateTypeService = (data) => {
     })
 }
 
-let getAllTypeService = async (page) => {
+let getAllTypeService = async (page, limit) => {
     try {
         let types = {}
-        if (!page) {
+        if (!page && !limit) {
             types = await db.Type_Of_Handbook.findAll();
             return {
                 errCode: 0,
                 errMessage: "OK",
                 types
             };
-        } else {
+        } 
+        if(page) {
             let type = await db.Type_Of_Handbook.findAndCountAll({
-                limit: 5,
-                offset: page > 1 ? 5 * (page - 1) : 0
+                limit: limit,
+                offset: page > 1 ? limit * (page - 1) : 0
             });
 
             const { count, rows } = type;
@@ -69,6 +70,16 @@ let getAllTypeService = async (page) => {
                 count,
                 types
             };
+        }
+        if(limit && page===0) {
+            types = await db.Type_Of_Handbook.findAll({
+                limit: limit
+            });
+            return {
+                errCode: 0,
+                errMessage: "OK",
+                types
+            }
         }
     } catch (e) {
         return e;
@@ -440,7 +451,6 @@ let createPublisherService = (data) => {
                 name: data.name,
                 image: data.image,
                 descriptionHTML: data.descriptionHTML,
-                descriptionMarkdown: data.descriptionMarkdown,
             })
 
             resolve({
@@ -627,6 +637,5 @@ module.exports = {
     createStoreService, updateStoreService, getAllStoresService, deleteStoreService, getStoreByIDService,
     createPublisherService, updatePublisherService, getAllPublishersService, deletePublisherService, getPublisherByIDService,
     createLanguageService, getAllLanguagesService, deleteLanguageService, updateLanguageService,
-
 
 }

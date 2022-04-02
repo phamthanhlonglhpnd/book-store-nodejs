@@ -229,7 +229,7 @@ let createNewUserService = (data) => {
 let getAllUsersService = async () => {
     
         try {
-            let data = await db.User.findAll({
+            let users = await db.User.findAll({
                 attributes: {
                     exclude: ['password', 'access_token', 'refresh_token']
                 },
@@ -237,7 +237,7 @@ let getAllUsersService = async () => {
             return {
                 errCode: 0,
                 errMessage: "OK",
-                data
+                users
             };
         } catch(e) {
             return e;

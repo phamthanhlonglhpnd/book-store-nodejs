@@ -36,6 +36,31 @@ let getAllBooks = async (req, res) => {
     }
 }
 
+let getBookByID = async (req, res) => {
+    try {
+        let response = await bookService.getBookByIDService(req.query.id);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
+}
+
+let getBookByFilter = async (req, res) => {
+    try {
+        let response = await bookService.getBookByFilterService(+req.query.type);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server!"
+        })
+    }
+}
+
 module.exports = {
-    createBook, deleteBook, getAllBooks,
+    createBook, deleteBook, getAllBooks, getBookByID, 
+    getBookByFilter, 
 }

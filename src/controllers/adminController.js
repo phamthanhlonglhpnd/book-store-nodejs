@@ -27,7 +27,7 @@ let updateType = async (req, res) => {
 
 let getAllType = async (req, res) => {
     try {
-        let response = await adminService.getAllTypeService(+req.query.page);
+        let response = await adminService.getAllTypeService(+req.query.page, +req.query.limit);
         return res.status(200).json(response);
     } catch(e) {
         return res.status(200).json({
