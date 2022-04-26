@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', process.env.URL_REACT, process.env.URL_VUE);
+    res.setHeader('Access-Control-Allow-Origin', process.env.URL_REACT, process.env.URL_VUE, process.env.URL_ADDRESS);
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -50,7 +50,9 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 viewEngine(app);
 initWebRoutes(app);
+
 connectDB();
+
 
 let port = process.env.PORT || 6969;
 

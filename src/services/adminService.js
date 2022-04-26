@@ -1,4 +1,5 @@
 import db from '../models/index';
+import client from '../config/es';
 
 // CRUD Type of Handbook
 let createTypeService = (data) => {
@@ -8,12 +9,27 @@ let createTypeService = (data) => {
                 name: data.name,
             });
 
+            await client.bulk({
+                refresh: true,
+                operations: [                    
+                    { index: { 
+                            _index: 'type_of_handbooks', 
+                            _id: type.dataValues.id, 
+                        } 
+                    },
+                    {
+                        name: data.name,
+                    },
+                ]
+            })
+
             resolve({
                 errCode: 0,
                 errMessage: "OK",
                 type
             })
         } catch (e) {
+            console.log(e);
             reject(e);
         }
     })
@@ -92,12 +108,18 @@ let deleteTypeService = (id) => {
             await db.Type_Of_Handbook.destroy({
                 where: { id: id }
             })
+
+            await client.delete({
+                index: 'type_of_handbooks',
+                id: id
+            })
             resolve({
                 errCode: 0,
                 errMessage: "Delete success!"
             })
 
         } catch (e) {
+            console.log(e);
             reject(e);
         }
     })
@@ -243,6 +265,23 @@ let createAuthorService = (data) => {
                 descriptionMarkdown: data.descriptionMarkdown,
             })
 
+            await client.bulk({
+                refresh: true,
+                operations: [                    
+                    { index: { 
+                            _index: 'authors', 
+                            _id: author.dataValues.id, 
+                        } 
+                    },
+                    {
+                        name: data.name,
+                        image: data.image,
+                        descriptionHTML: data.descriptionHTML,
+                        descriptionMarkdown: data.descriptionMarkdown,
+                    },
+                ]
+            })
+
             resolve({
                 errCode: 0,
                 errMessage: "OK",
@@ -313,6 +352,11 @@ let deleteAuthorService = (id) => {
         try {
             await db.Author.destroy({
                 where: { id: id }
+            })
+
+            await client.delete({
+                index: 'authors',
+                id: id
             })
             resolve({
                 errCode: 0,

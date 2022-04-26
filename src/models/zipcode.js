@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Zipcode.belongsTo(models.User, { foreignKey: 'userID', targetKey: 'id'} )
     }
   };
   Zipcode.init({
@@ -18,7 +19,9 @@ module.exports = (sequelize, DataTypes) => {
     district: DataTypes.STRING,
     ward: DataTypes.STRING,
     street: DataTypes.STRING,
-    number: DataTypes.STRING
+    userID: DataTypes.INTEGER,
+    typeID: DataTypes.STRING,
+    isDefault: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Zipcode',

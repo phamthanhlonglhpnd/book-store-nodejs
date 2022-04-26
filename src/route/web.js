@@ -5,6 +5,7 @@ import bookController from '../controllers/bookController';
 import authController from '../controllers/authController';
 import authMiddleware from '../middleware/authMiddleware';
 import adminController from '../controllers/adminController';
+import employeeController from '../controllers/employeeController';
 
 let router = express.Router();
 
@@ -12,6 +13,8 @@ let initWebRoutes = (app) => {
 
     // Don't need token
     router.get("/", homeController.getHomePage);
+
+    router.get("/api/get-user-by-id", userController.getUserByID);
 
     router.post("/api/login-token", authController.login);
     router.post("/api/refresh-token", authController.refreshToken);
@@ -39,6 +42,12 @@ let initWebRoutes = (app) => {
     router.get("/api/get-book-by-id", bookController.getBookByID);
     router.get("/api/get-book-by-filter", bookController.getBookByFilter);
 
+    router.get("/api/search-type-of-book", userController.searchTypeOfBooks);
+    router.get("/api/search-authors", userController.searchAuthors);
+    router.get("/api/search-authors-sql", userController.searchAuthorsSQL);
+    router.get("/api/search-books", userController.searchBooks);
+    router.get("/api/search-books-sql", userController.searchBooksSQL);
+
     // Need token
     router.use(authMiddleware.isAuth);
 
@@ -48,7 +57,17 @@ let initWebRoutes = (app) => {
     router.post("/api/create-new-user", userController.createNewUser);
     router.put("/api/update-user", userController.updateUser);
     router.put("/api/change-password", userController.changePassword);
-    router.get("/api/get-user-by-id", userController.getUserByID);
+    router.post("/api/add-to-cart", userController.addToCart);
+    router.get("/api/get-books-in-cart", userController.getBooksInCart);
+    router.delete("/api/delete-book-in-cart", userController.deleteBookInCart);
+    router.post("/api/create-address", userController.createAddress);
+    router.delete("/api/delete-address", userController.deleteAddress);
+    router.get("/api/get-all-address", userController.getAllAddress);
+    router.post("/api/create-order", userController.order);
+    router.get("/api/get-all-non-confirmed-orders-by-user", userController.getAllNonConfirmedOrders);
+    router.delete("/api/delete-order", userController.deleteOrder);
+    router.get("/api/get-all-confirmed-orders-by-user", userController.getAllConfirmedOrders);
+    router.get("/api/get-all-canceled-orders-by-user", userController.getAllCancelededOrders);
 
     //Type of Handbook
     router.post("/api/create-type", adminController.createType);
@@ -83,6 +102,11 @@ let initWebRoutes = (app) => {
     // Book
     router.post("/api/create-book", bookController.createBook);
     router.delete("/api/delete-book", bookController.deleteBook);
+
+    // Order
+    router.get("/api/get-all-non-confirmed-orders", employeeController.getAllNonConfirmedOrders);
+    router.get("/api/get-all-confirmed-orders", employeeController.getAllConfirmedOrders);
+    router.put("/api/confirm-order", employeeController.confirmOrder)
 
     return app.use("/", router);
 }

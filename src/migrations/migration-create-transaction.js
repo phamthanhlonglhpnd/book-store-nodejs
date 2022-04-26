@@ -1,17 +1,35 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Password_Resets', {
+    await queryInterface.createTable('Transactions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      email: {
+      lading_code: {
         type: Sequelize.STRING
       },
-      token: {
+      userID: {
+        type: Sequelize.INTEGER
+      },
+      amount: {
+        type: Sequelize.STRING
+      },
+      statusID: {
+        type: Sequelize.STRING
+      },
+      paymentID: {
+        type: Sequelize.STRING
+      },
+      address_receiver: {
+        type: Sequelize.STRING
+      },
+      name_receiver: {
+        type: Sequelize.STRING
+      },
+      phone_receiver: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -25,6 +43,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Password_Resets');
+    await queryInterface.dropTable('Transactions');
   }
 };

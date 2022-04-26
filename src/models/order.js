@@ -11,20 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Order.belongsTo(models.Transaction, { foreignKey: 'transactionID', targetKey: 'id' });
+      Order.belongsTo(models.Book, { foreignKey: 'bookID', targetKey: 'id' });
     }
   };
   Order.init({
-    customerID: DataTypes.INTEGER,
+    transactionID: DataTypes.INTEGER,
     bookID: DataTypes.INTEGER,
     quantity: DataTypes.INTEGER,
     price: DataTypes.STRING,
-    statusID: DataTypes.STRING,
-    paymentID: DataTypes.INTEGER,
     storeID: DataTypes.INTEGER,
-    address_receiver: DataTypes.STRING,
-    name_receiver: DataTypes.STRING,
-    phone_receiver: DataTypes.STRING,
-    shipping_fee: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Order',

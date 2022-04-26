@@ -20,8 +20,14 @@ module.exports = {
       street: {
         type: Sequelize.STRING
       },
-      number: {
-        type: Sequelize.STRING
+      userID: {
+        type: Sequelize.INTEGER
+      },
+      typeID: {
+        type: Sequelize.INTEGER
+      },
+      isDefault: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

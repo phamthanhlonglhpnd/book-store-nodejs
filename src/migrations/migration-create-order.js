@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      customerID: {
+      transactionID: {
         type: Sequelize.INTEGER
       },
       bookID: {
@@ -20,26 +20,8 @@ module.exports = {
       price: {
         type: Sequelize.STRING
       },
-      statusID: {
-        type: Sequelize.STRING
-      },
-      paymentID: {
-        type: Sequelize.INTEGER
-      },
       storeID: {
         type: Sequelize.INTEGER
-      },
-      address_receiver: {
-        type: Sequelize.STRING
-      },
-      name_receiver: {
-        type: Sequelize.STRING
-      },
-      phone_receiver: {
-        type: Sequelize.STRING
-      },
-      shipping_fee: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
